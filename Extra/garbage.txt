@@ -1,0 +1,92 @@
+code1:
+    #include <iostream>
+    #include "vec2.hpp"
+    #include <vector>
+    #include <SFML/Graphics.hpp>
+
+
+    const std::vector<sf::Vector2i> getCollisionPositionSet(const sf::Vector2f& center, const sf::Vector2f& dimension){
+        std::vector<sf::Vector2i> collision;
+        for (int x=0; x < dimension.x; x++){
+            for(int y=0; y< dimension.y; y++){
+                collision.push_back(sf::Vector2i(x+center.x,y+center.y));
+            }
+        }
+        return collision;
+    }
+
+    const sf::Vector2f murv(double a, double v, double x){
+            v = v + a;
+            x = x + v + (1/2) * a;
+            return sf::Vector2f(v, x);
+            
+    }
+
+    int main(){
+        sf::RenderWindow window(sf::VideoMode(800, 500), "Collision");
+        sf::CircleShape shape(50);
+        sf::RectangleShape rec(sf::Vector2f(800, 50));
+        rec.setPosition(0, 400);
+        const std::vector<sf::Vector2i>col = getCollisionPositionSet(rec.getScale(), rec.getPosition());
+        for(sf::Vector2i i:col){
+            std::cout<< i.x <<"::"<<i.y<<"\n";
+        }
+        double a = 0.000005;
+        double v = 0;
+        double y = 0;
+
+        while (window.isOpen()){
+            sf::Event InputEvent;
+            while (window.pollEvent(InputEvent)){
+                if (InputEvent.type == InputEvent.Closed){
+                    window.close();
+                }
+            }
+            // Collision
+            //
+            std::cout << shape.getPosition().x <<"::"<< int(shape.getPosition().y) <<"\n";
+            shape.setPosition(0, y);
+
+            window.clear();
+            window.draw(shape);
+            window.draw(rec);
+            window.display();
+
+            v = v + a;
+            y = y + v + (1/2) * a;
+        }
+        
+        return 0;
+    }
+
+Position:
+    std::cout << shape.getPosition().x <<"::"<< int(shape.getPosition().y) <<"\n";
+
+Get the collision V1.0.0:
+
+    const std::vector<sf::Vector2i> getCollisionPositionSet(const sf::Vector2f& center, const sf::Vector2f& dimension){
+        std::vector<sf::Vector2i> collision;
+        std::cout<<center.x<<"::"<<center.y<<"\n";
+        for (int x=0; x <= dimension.x; x++){
+            for(int y=0; y<= dimension.y; y++){
+                collision.push_back(sf::Vector2i(x+center.x,y+center.y));
+            }
+        }
+        return collision;
+    }
+    if (shape.getPosition().y > 300){
+        if (inVector(collision, sf::Vector2i(shape.getPosition().x, shape.getPosition().y))){
+            std::cout << "ok";
+        }
+
+    }
+Test Vec:
+    #include <iostream>
+    #include "vec.hpp"
+
+    int main(){
+        Vec3 X(1,2, 3);
+        Vec3 Y(1, 2, 3);
+        bool dd =  X==Y;
+        std::cout<< dd;
+    }
