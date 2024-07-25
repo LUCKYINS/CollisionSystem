@@ -1,12 +1,16 @@
+#include <iostream>
+#include <math.h>
+#include <set>
+#include "vec.hpp"
+
 #ifndef COLLISION
 #define COLLISION
-#include <iostream>
-#include "vec.hpp"
-#include <math.h>
 
 class Shape2D{
     protected:
         int area = 1;
+        std::set<Vec2> outerLayer;
+
     public:
         int getArea()const{
             return area;
@@ -86,13 +90,10 @@ class StaticCollision{//TODO createCollision
     private:
         const Shape2D shape;
         const Vec2 Postion;
+
     public:
         ~StaticCollision() = default;
         StaticCollision(const Shape2D& S, Vec2& P):shape(S), Postion(P){}
-        int getShapeArea()const{
-            return shape.getArea();
-        }
-
         void createCollision();
         bool isCollied(StaticCollision& obj);
 };
@@ -104,5 +105,8 @@ class DynamicCollision:StaticCollision{
         void stickToObject(){
 
         }
+};
+class Container{// TODO contain the collision shape and sf shape
+    
 };
 #endif
