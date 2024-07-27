@@ -10,7 +10,7 @@ class Vec2{
     protected: // protected so it could be inherited but also private
 
         int x=0;
-        int y=0; 
+        int y=0;
 
     public:
 
@@ -36,9 +36,12 @@ class Vec2{
             return (obj.x == x) && (obj.y == y);
         }
 
-        void operator+ (const Vec2& obj){
+        void operator+= (const Vec2& obj){
             x += obj.x;
             y += obj.y;
+        }
+        Vec2 operator+(const Vec2& obj2){
+            return Vec2(obj2.x + x, obj2.y + y);
         }
 };
 class Vec3:public Vec2{
@@ -50,7 +53,7 @@ class Vec3:public Vec2{
         int z=0;
 
     public:
-        
+
         Vec3() = default;
         ~Vec3() = default;
 
