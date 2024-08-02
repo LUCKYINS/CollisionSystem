@@ -1,7 +1,9 @@
 #include <iostream>
+#include <SFML/Graphics/Shape.hpp>
+#include <SFML/Graphics.hpp>
+#include "vec.hpp"
 #include <math.h>
 #include <set>
-#include "vec.hpp"
 
 #ifndef COLLISION
 #define COLLISION
@@ -107,6 +109,6 @@ class DynamicCollision:StaticCollision{
         }
 };
 class Container{// TODO contain the collision shape and sf shape
-    
+
 };
 #endif
