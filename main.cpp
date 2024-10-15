@@ -1,36 +1,64 @@
-#include <SFML/Graphics/Shape.hpp>
 #include <iostream>
-#include <SFML/Graphics.hpp>
+#include <SDL2/SDL.h>
 #include <unordered_set>
 #include "vec.hpp"
 
-sf::RenderWindow window(sf::VideoMode(800, 500), "Collision");
-sf::RectangleShape square(sf::Vector2f(50, 50));
-sf::RectangleShape rec(sf::Vector2f(800, 50));
+int w = 800;
+int h = 500;
+
+
 void motion(){// TODO for object in motion
 }
 void animation(){// TODO when frame changes
-        window.clear();
-        window.draw(square);
-        window.draw(rec);
-        window.display();
 }
 
 int main(){
-    rec.setPosition(0, 400);
+    //init
+    SDL_Init(SDL_INIT_EVERYTHING);
+    //window
+    SDL_Window *window = SDL_CreateWindow("Bouncing Ball", 300, 300, w, h,SDL_WINDOW_SHOWN);
+    SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+
+    //rec
+    SDL_Rect rec;
+    rec.x = 0;
+    rec.y = 400;
+    rec.w = 800;
+    rec.h = 50;
+
+    //MRUA
     double a = 0.000001;
     double v = 0;
     double y = 0;
 
-    while (window.isOpen()){
-        sf::Event InputEvent;
-        while (window.pollEvent(InputEvent)){
-            if (InputEvent.type == InputEvent.Closed){
-                window.close();
+    //Square
+    SDL_Rect square;
+    square.x = 0;
+    square.y = y;
+    square.w = 50;
+    square.h = 50;
+
+    // event
+    SDL_Event e;
+    while(1){
+        while (SDL_PollEvent(&e) != 0 ){
+            switch (e.type) {
+                case SDL_QUIT:
+                    return 1;
             }
         }
-        square.setPosition(0, y);
-        animation();
+        square.y = y;
+
+        //
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        SDL_RenderClear(renderer);
+
+
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        SDL_RenderFillRect(renderer, &square);
+        SDL_RenderFillRect(renderer, &rec);
+
+        SDL_RenderPresent(renderer);
         v = v + a;
         y = y + v + (1/2) * a;
     }

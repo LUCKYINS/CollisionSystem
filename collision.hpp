@@ -1,6 +1,4 @@
 #include <iostream>
-#include <SFML/Graphics/Shape.hpp>
-#include <SFML/Graphics.hpp>
 #include "vec.hpp"
 #include <math.h>
 #include <set>
