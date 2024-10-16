@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SDL2/SDL.h>
 #include <unordered_set>
 #include "vec.hpp"
@@ -27,7 +26,7 @@ int main(){
     rec.h = 50;
 
     //MRUA
-    double a = 0.000001;
+    double a = 0.1;
     double v = 0;
     double y = 0;
 
@@ -41,6 +40,7 @@ int main(){
     // event
     SDL_Event e;
     while(1){
+        Uint64 start = SDL_GetPerformanceCounter();
         while (SDL_PollEvent(&e) != 0 ){
             switch (e.type) {
                 case SDL_QUIT:
@@ -61,6 +61,9 @@ int main(){
         SDL_RenderPresent(renderer);
         v = v + a;
         y = y + v + (1/2) * a;
+        Uint64 end = SDL_GetPerformanceCounter();
+        float elapseMS = (end-start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+        SDL_Delay(16.666f -elapseMS);
     }
     return 0;
 }

@@ -1,7 +1,7 @@
-
+#include <iostream>
 #ifndef VEC_HPP
 #define VEC_HPP
-#include <iostream>
+
 
 class Vec2{
     /*
@@ -80,13 +80,11 @@ class Vec3:public Vec2{
         }
 };
 
-namespace std {
-    template <> struct hash<Vec2> {
-        std::size_t operator()(const Vec2 &obj) const {
-            std::size_t h1 = std::hash<int>()(obj.getX());
-            std::size_t h2 = std::hash<int>()(obj.getY());
-            return h1 ^ (h2 << 1); // or use any other hash combination strategy
-        }
-    };
-}
+template <> struct std::hash<Vec2> {
+    std::size_t operator()(const Vec2 &obj) const {
+        std::size_t h1 = std::hash<int>()(obj.getX());
+        std::size_t h2 = std::hash<int>()(obj.getY());
+        return h1 ^ (h2 << 1); // or use any other hash combination strategy
+    }
+};
 #endif
