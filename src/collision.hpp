@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cmath>
 #include "vec.hpp"
 #include <math.h>
 #include <set>
@@ -23,11 +24,11 @@ class Shape2D{
 
 class Circle:public Shape2D{
     private:
-        float radius = 1;
+        double radius = 1;
     public:
         ~Circle() = default;
-        Circle() = default;
-        Circle(float RADIUS, Vec2 CENTRE):radius(RADIUS),Shape2D(CENTRE){
+        Circle() =int default;
+        Circle(double RADIUS, Vec2 CENTRE):radius(RADIUS),Shape2D(CENTRE){
         }
 };
 
@@ -35,8 +36,8 @@ class Circle:public Shape2D{
 
 class Ellipse:public Shape2D{
     private:
-        int A_axis=1;
-        int B_axis=1;
+        double A_axis=1;
+        double B_axis=1;
     public:
         ~Ellipse() = default;
         Ellipse() = default;
@@ -46,23 +47,30 @@ class Ellipse:public Shape2D{
 
 // Rectangle & Square
 
-class Rectangle:public Shape2D{
+class Rectangle:public Shape2D{ //TODO test collision between two Rectangle
     private:
-        int width=1;
-        int length=1;
+        double width=1;
+        double length=1;
     public:
         ~Rectangle() = default;
         Rectangle() = default;
         Rectangle(int WIDTH, int LENGTH, Vec2 CENTRE):width(WIDTH), length(LENGTH), Shape2D(CENTRE){
         }
+        double getWidth(){
+            return width;
+        }
+        double getLength(){
+            return length;
+        }
+
 };
 
 // Triangle
 
 class Triangle:public Shape2D{
     private:
-        int height;
-        int base;
+        double height;
+        double base;
     public:
         ~Triangle() = default;
         Triangle() = default;
@@ -92,13 +100,9 @@ class DynamicCollision:public StaticCollision{
 // Container
 class CollisionObjectContainer{
     private:
-        std::set<StaticCollision> CollisionSet = {};
     public:
         ~CollisionObjectContainer() = default;
         CollisionObjectContainer()= default;
-        void addCollisionObject(StaticCollision CollisionObject){
-            CollisionSet.insert(CollisionObject);
-        }
 };
 
 #endif

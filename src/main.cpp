@@ -1,5 +1,5 @@
 #include <SDL2/SDL.h>
-#include <unordered_set>
+#include "collision.hpp"
 #include "vec.hpp"
 
 int w = 800;
@@ -15,15 +15,16 @@ int main(){
     //init
     SDL_Init(SDL_INIT_EVERYTHING);
     //window
-    SDL_Window *window = SDL_CreateWindow("Bouncing Ball", 300, 300, w, h,SDL_WINDOW_SHOWN);
+    SDL_Window *window = SDL_CreateWindow("CollisionSystem", 300, 300, w, h,SDL_WINDOW_SHOWN);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     //rec
+    Rectangle r(800, 100, Vec2(0, 400));
     SDL_Rect rec;
-    rec.x = 0;
-    rec.y = 400;
-    rec.w = 800;
-    rec.h = 50;
+    rec.x = r.getCentre().getX();
+    rec.y = r.getCentre().getY();
+    rec.w = r.getWidth();
+    rec.h = r.getLength();
 
     //MRUA
     double a = 0.1;
@@ -61,6 +62,7 @@ int main(){
         SDL_RenderPresent(renderer);
         v = v + a;
         y = y + v + (1/2) * a;
+
         Uint64 end = SDL_GetPerformanceCounter();
         float elapseMS = (end-start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
         SDL_Delay(16.666f -elapseMS);

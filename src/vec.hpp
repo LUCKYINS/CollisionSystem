@@ -9,23 +9,23 @@ class Vec2{
     */
     protected: // protected so it could be inherited but also private
 
-        int x=0;
-        int y=0;
+        double x=0;
+        double y=0;
 
     public:
 
         Vec2()= default;
         ~Vec2() = default;
-        Vec2(int X, int Y):x(X), y(Y){};
+        Vec2(double X, double Y):x(X), y(Y){};
 
-        int getX() const{
+        double getX() const{
         /*
             *Get the x member of the vector
         */
             return x;
         }
 
-        int getY() const{
+        double getY() const{
         /*
             *Get the y member of the vector
         */
@@ -51,17 +51,17 @@ class Vec3:public Vec2{
     */
     private:
 
-        int z=0;
+        double z=0;
 
     public:
 
         Vec3() = default;
         ~Vec3() = default;
 
-        Vec3(int Z, int X, int Y):Vec2(X,Y),z(Z){}; // Using Vec2 constructor
-        Vec3(Vec2 OBJ, int Z): Vec2(OBJ.getX(), OBJ.getY()), z(Z){};
+        Vec3(double Z, double X, double Y):Vec2(X,Y),z(Z){}; // Using Vec2 constructor
+        Vec3(Vec2 OBJ, double Z): Vec2(OBJ.getX(), OBJ.getY()), z(Z){};
 
-        int getZ()const{
+        double getZ()const{
             /*
                 *Get the z member of the vector
             */
@@ -79,12 +79,13 @@ class Vec3:public Vec2{
             return Vec3(Vec2::operator+(obj), z+obj.z);
         }
 };
-
-template <> struct std::hash<Vec2> {
-    std::size_t operator()(const Vec2 &obj) const {
-        std::size_t h1 = std::hash<int>()(obj.getX());
-        std::size_t h2 = std::hash<int>()(obj.getY());
-        return h1 ^ (h2 << 1); // or use any other hash combination strategy
-    }
-};
+namespace std {
+    template <> struct hash<Vec2> {
+        std::size_t operator()(const Vec2 &obj) const {
+            std::size_t h1 = std::hash<double>()(obj.getX());
+            std::size_t h2 = std::hash<double>()(obj.getY());
+            return h1 ^ (h2 << 1); // or use any other hash combination strategy
+        }
+    };
+}
 #endif
