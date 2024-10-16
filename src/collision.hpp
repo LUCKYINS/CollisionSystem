@@ -3,6 +3,7 @@
 #include "vec.hpp"
 #include <math.h>
 #include <set>
+#include <vector>
 
 #ifndef COLLISION
 #define COLLISION
@@ -15,9 +16,7 @@ class Shape2D{
         ~Shape2D() = default;
         Shape2D() = default;
         Shape2D(Vec2 CENTRE): centre(CENTRE){}
-        virtual Vec2 getCentre()const{
-            return centre;
-        };
+        Vec2 getCentre()const{return centre;};
 };
 
 // Circle
@@ -27,9 +26,8 @@ class Circle:public Shape2D{
         double radius = 1;
     public:
         ~Circle() = default;
-        Circle() =int default;
-        Circle(double RADIUS, Vec2 CENTRE):radius(RADIUS),Shape2D(CENTRE){
-        }
+        Circle() = default;
+        Circle(double RADIUS, Vec2 CENTRE):radius(RADIUS),Shape2D(CENTRE){}
 };
 
 // Ellipse
@@ -41,8 +39,7 @@ class Ellipse:public Shape2D{
     public:
         ~Ellipse() = default;
         Ellipse() = default;
-        Ellipse(int A_AXIS, int B_AXIS, Vec2 CENTRE):A_axis(A_AXIS), B_axis(B_AXIS), Shape2D(CENTRE){
-        }
+        Ellipse(int A_AXIS, int B_AXIS, Vec2 CENTRE):A_axis(A_AXIS), B_axis(B_AXIS), Shape2D(CENTRE){}
 };
 
 // Rectangle & Square
@@ -54,14 +51,9 @@ class Rectangle:public Shape2D{ //TODO test collision between two Rectangle
     public:
         ~Rectangle() = default;
         Rectangle() = default;
-        Rectangle(int WIDTH, int LENGTH, Vec2 CENTRE):width(WIDTH), length(LENGTH), Shape2D(CENTRE){
-        }
-        double getWidth(){
-            return width;
-        }
-        double getLength(){
-            return length;
-        }
+        Rectangle(int WIDTH, int LENGTH, Vec2 CENTRE):width(WIDTH), length(LENGTH), Shape2D(CENTRE){}
+        double getWidth(){return width;}
+        double getLength(){return length;}
 
 };
 
@@ -74,8 +66,7 @@ class Triangle:public Shape2D{
     public:
         ~Triangle() = default;
         Triangle() = default;
-        Triangle(int HEIGHT, int BASE, Vec2 CENTRE):height(HEIGHT), base(BASE), Shape2D(CENTRE){
-        }
+        Triangle(int HEIGHT, int BASE, Vec2 CENTRE):height(HEIGHT), base(BASE), Shape2D(CENTRE){}
 };
 
 // Collision
@@ -93,16 +84,19 @@ class DynamicCollision:public StaticCollision{
     private:
     public:
         DynamicCollision(Shape2D SHAPE): StaticCollision(SHAPE){}
-        void stickToObject(){
-        }
+        void stickToObject(){}
 };
 
 // Container
 class CollisionObjectContainer{
     private:
+        std::vector<StaticCollision> CollisionVector = {};
+
     public:
         ~CollisionObjectContainer() = default;
-        CollisionObjectContainer()= default;
+        CollisionObjectContainer() = default;
+        void addCollisionObject(StaticCollision &obj){CollisionVector.push_back(obj);}
+
 };
 
 #endif
