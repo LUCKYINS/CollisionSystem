@@ -20,12 +20,13 @@ int main(){
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
     //rec
-    Rectangle r(800, 100, Vec2(0, 400));
+    Rectangle r(800, 100);
+    Shape2DCollision dr(r, Vec2(0, 400));
     SDL_Rect rec;
-    rec.x = r.getCentre().getX();
-    rec.y = r.getCentre().getY();
-    rec.w = r.getWidth();
-    rec.h = r.getHeight();
+    rec.x = dr.getCentre().getX();
+    rec.y = dr.getCentre().getY();
+    rec.w = dr.getWidth();
+    rec.h = dr.getHeight();
 
     //MRUA
     double a = 0.1;
@@ -33,17 +34,18 @@ int main(){
     double y = 0;
 
     //Square
-    Rectangle s(100,100, Vec2(0, y));
+    Rectangle s(100,100);
+    Shape2DCollision ds(s,Vec2(0, 0));
     SDL_Rect square;
-    square.x = s.getCentre().getX();
-    square.y = s.getCentre().getY();
-    square.w = s.getWidth();
-    square.h = s.getHeight();
+    square.x = ds.getCentre().getX();
+    square.y = ds.getCentre().getY();
+    square.w = ds.getWidth();
+    square.h = ds.getHeight();
 
     //collision
     CollisionObjectContainer container;
-    container.addCollisionObject(r);
-    container.addCollisionObject(s);
+    container.addCollisionObject(dr);
+    container.addCollisionObject(ds);
 
     // event
     SDL_Event e;
@@ -55,8 +57,8 @@ int main(){
                     return 1;
             }
         }
-        s.changeCentre(Vec2(0,1));
-        square.y = s.getCentre().getY();
+        ds.changeCentre(Vec2(0,1));
+        square.y = ds.getCentre().getY();
 
         //
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
