@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_render.h>
 #include "collision.hpp"
 #include "vec.hpp"
 
@@ -24,7 +25,7 @@ int main(){
     rec.x = r.getCentre().getX();
     rec.y = r.getCentre().getY();
     rec.w = r.getWidth();
-    rec.h = r.getLength();
+    rec.h = r.getHeight();
 
     //MRUA
     double a = 0.1;
@@ -32,11 +33,17 @@ int main(){
     double y = 0;
 
     //Square
+    Rectangle s(100,100, Vec2(0, y));
     SDL_Rect square;
-    square.x = 0;
-    square.y = y;
-    square.w = 50;
-    square.h = 50;
+    square.x = s.getCentre().getX();
+    square.y = s.getCentre().getY();
+    square.w = s.getWidth();
+    square.h = s.getHeight();
+
+    //collision
+    CollisionObjectContainer container;
+    container.addCollisionObject(r);
+    container.addCollisionObject(s);
 
     // event
     SDL_Event e;
@@ -48,7 +55,8 @@ int main(){
                     return 1;
             }
         }
-        square.y = y;
+        s.changeCentre(Vec2(0,1));
+        square.y = s.getCentre().getY();
 
         //
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
@@ -60,8 +68,11 @@ int main(){
         SDL_RenderFillRect(renderer, &rec);
 
         SDL_RenderPresent(renderer);
-        v = v + a;
-        y = y + v + (1/2) * a;
+
+        v += a;
+        y += v + (1/2) * a;
+
+        container.checkCollision();
 
         Uint64 end = SDL_GetPerformanceCounter();
         float elapseMS = (end-start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;

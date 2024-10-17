@@ -1,3 +1,6 @@
+
+#include <cstdio>
+#include <functional>
 #include <iostream>
 #include <cmath>
 #include "vec.hpp"
@@ -8,15 +11,18 @@
 #ifndef COLLISION
 #define COLLISION
 
+
 // Shape2D (abstract class)
 class Shape2D{
     protected:
         Vec2 centre = Vec2(0,0);
+        bool dynamic = true;
     public:
         ~Shape2D() = default;
         Shape2D() = default;
         Shape2D(Vec2 CENTRE): centre(CENTRE){}
-        Vec2 getCentre()const{return centre;};
+        Vec2 getCentre()const{return centre;}
+        bool operator==(Shape2D & obj){return obj.centre == centre;}
 };
 
 // Circle
@@ -46,15 +52,19 @@ class Ellipse:public Shape2D{
 
 class Rectangle:public Shape2D{ //TODO test collision between two Rectangle
     private:
+        double height=1;
         double width=1;
-        double length=1;
     public:
         ~Rectangle() = default;
         Rectangle() = default;
-        Rectangle(int WIDTH, int LENGTH, Vec2 CENTRE):width(WIDTH), length(LENGTH), Shape2D(CENTRE){}
+        Rectangle(int WIDTH, int HEIGHT, Vec2 CENTRE):width(WIDTH), height(HEIGHT), Shape2D(CENTRE){}
         double getWidth(){return width;}
-        double getLength(){return length;}
-
+        double getHeight(){return height;}
+        void setCentre(Vec2 obj){centre = obj;}
+        void setCentre(double x, double y){centre = Vec2(x, y);}
+        void changeCentre(Vec2 obj){centre+=obj;}
+        void changeCentre(double x, double y){centre += Vec2(x, y);}
+        bool operator==(Rectangle & obj){return Shape2D::operator==(obj) && obj.height == height && obj.width == width;}
 };
 
 // Triangle
@@ -69,34 +79,33 @@ class Triangle:public Shape2D{
         Triangle(int HEIGHT, int BASE, Vec2 CENTRE):height(HEIGHT), base(BASE), Shape2D(CENTRE){}
 };
 
-// Collision
-
-class StaticCollision{
-    private:
-        Shape2D shape;
-    public:
-        ~StaticCollision() = default;
-        StaticCollision() = default;
-        StaticCollision(Shape2D SHAPE):shape(SHAPE){}
-};
-
-class DynamicCollision:public StaticCollision{
-    private:
-    public:
-        DynamicCollision(Shape2D SHAPE): StaticCollision(SHAPE){}
-        void stickToObject(){}
-};
-
 // Container
 class CollisionObjectContainer{
     private:
-        std::vector<StaticCollision> CollisionVector = {};
+        std::vector<std::reference_wrapper<Rectangle>> collisionVector; // add refenceing of objects
 
     public:
         ~CollisionObjectContainer() = default;
         CollisionObjectContainer() = default;
-        void addCollisionObject(StaticCollision &obj){CollisionVector.push_back(obj);}
+        void addCollisionObject(Rectangle &obj){collisionVector.push_back(obj);}
 
+        void checkCollision(){
+            for (Rectangle &obj1 : collisionVector){
+                for(Rectangle &obj2: collisionVector){
+
+                    // Colliding for rect
+                    bool colliding = obj1.getCentre().getX() - obj1.getWidth()/2 <= obj2.getCentre().getX() + obj2.getWidth()/2 &&
+                    obj1.getCentre().getX() + obj1.getWidth()/2 >= obj2.getCentre().getX() - obj2.getWidth()/2&&
+                    obj1.getCentre().getY() - obj1.getHeight()/2 <= obj2.getCentre().getY() + obj2.getHeight()/2&&
+                    obj1.getCentre().getY() + obj1.getHeight()/2 >= obj2.getCentre().getY() - obj2.getHeight()/2;
+
+                    if (!(obj1==obj2) && colliding){
+                        printf("ok\n");
+                        obj2.setCentre(0, 100);
+                    }
+                }
+            }
+        }
 };
 
 #endif

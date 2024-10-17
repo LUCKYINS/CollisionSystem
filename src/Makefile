@@ -9,5 +9,7 @@ link:
 complie:
 	$(GXX) $(CFlages) -c main.cpp
 
+noF:
+	g++ main.cpp -o main $(SDLFlages)
 rmall:
 	rm main.o main

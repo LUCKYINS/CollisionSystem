@@ -19,7 +19,7 @@ code1:
             v = v + a;
             x = x + v + (1/2) * a;
             return sf::Vector2f(v, x);
-            
+
     }
 
     int main(){
@@ -55,7 +55,7 @@ code1:
             v = v + a;
             y = y + v + (1/2) * a;
         }
-        
+
         return 0;
     }
 
@@ -114,7 +114,7 @@ Code2:
         sf::RectangleShape rec(sf::Vector2f(800, 50));
 
         rec.setPosition(0, 400);
-        
+
         std::unordered_set<Vec2> collision = getCollisionPositionSet(rec.getPosition(),rec.getSize());
         double a = 0.0000001;
         double v = 0;
@@ -129,7 +129,7 @@ Code2:
             }
             // Collision
             //
-            
+
             shape.setPosition(0, y);
             if (shape.getPosition().y > 200){
                 if (collision.count(Vec2(shape.getPosition().x, shape.getPosition().y))){
@@ -146,6 +146,24 @@ Code2:
             v = v + a;
             y = y + v + (1/2) * a;
         }
-        
+
         return 0;
     }
+collision.hpp:
+    Collision
+
+class StaticCollision{
+    private:
+        Shape2D shape;
+    public:
+        ~StaticCollision() = default;
+        StaticCollision() = default;
+        StaticCollision(Shape2D SHAPE):shape(SHAPE){}
+};
+
+class DynamicCollision:public StaticCollision{
+    private:
+    public:
+        DynamicCollision(Shape2D SHAPE): StaticCollision(SHAPE){}
+        void stickToObject(){}
+};
