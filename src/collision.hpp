@@ -8,55 +8,41 @@
 #ifndef COLLISION
 #define COLLISION
 
-enum class Shapes{
+enum class Shape2D{
   Rect,Tri,Cir,Elli
 };
-
-// Shape2D (abstract class)
-class Shape2D{
-    protected:
-        Vec2 centre = Vec2(0,0);
-        bool dynamic = true;
-    public:
-        ~Shape2D() = default;
-        Shape2D() = default;
-        Shape2D(Vec2 CENTRE): centre(CENTRE){}
-        Vec2 getCentre()const{return centre;}
-        bool operator==(Shape2D & obj){return obj.centre == centre;}
-};
-
 // Circle
 
-class Circle:public Shape2D{
+class Circle{
     private:
         double radius = 1;
     public:
         ~Circle() = default;
         Circle() = default;
-        Circle(double RADIUS, Vec2 CENTRE):radius(RADIUS),Shape2D(CENTRE){}
+        Circle(double RADIUS):radius(RADIUS){}
 };
 
 // Ellipse
 
-class Ellipse:public Shape2D{
+class Ellipse{
     private:
         double A_axis=1;
         double B_axis=1;
     public:
         ~Ellipse() = default;
         Ellipse() = default;
-        Ellipse(int A_AXIS, int B_AXIS, Vec2 CENTRE):A_axis(A_AXIS), B_axis(B_AXIS), Shape2D(CENTRE){}
+        Ellipse(int A_AXIS, int B_AXIS, Vec2 CENTRE):A_axis(A_AXIS), B_axis(B_AXIS){}
 };
 // Triangle
 
-class Triangle:public Shape2D{
+class Triangle{
     private:
         double height;
         double base;
     public:
         ~Triangle() = default;
         Triangle() = default;
-        Triangle(int HEIGHT, int BASE, Vec2 CENTRE):height(HEIGHT), base(BASE), Shape2D(CENTRE){}
+        Triangle(int HEIGHT, int BASE, Vec2 CENTRE):height(HEIGHT), base(BASE){}
 };
 // Rectangle & Square
 
@@ -73,17 +59,17 @@ class Rectangle{
         bool operator==(Rectangle & obj)const{return obj.height == height && obj.width == width;}
 };
 //Shape2DCollision (replace Shape2D)
-class Shape2DCollision: public Rectangle{
+class Shape2DCollision: public Rectangle, Triangle, Ellipse, Circle{
     private:
         Vec2 centre = Vec2(0,0);
         bool dynamic = true;
-        Shapes shape;
+        Shape2D shape;
 
     public:
         ~Shape2DCollision() = default;
         Shape2DCollision() = default;
 
-        Shape2DCollision(Rectangle OBJ, Vec2 CENTRE): Rectangle(OBJ),centre(CENTRE){ shape = Shapes::Rect;} // To continu
+        Shape2DCollision(Rectangle OBJ, Vec2 CENTRE): Rectangle(OBJ),centre(CENTRE){ shape = Shape2D::Rect;} // To continu
 
         Vec2 getCentre()const{return centre;}
         void setCentre(Vec2 obj){centre = obj;}
