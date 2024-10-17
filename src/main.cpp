@@ -26,7 +26,7 @@ int main(){
     rec.x = dr.getCentre().getX();
     rec.y = dr.getCentre().getY();
     rec.w = dr.getWidth();
-    rec.h = dr.getHeight();
+    rec.h = dr.getLength();
 
     //MRUA
     double a = 0.1;
@@ -40,7 +40,7 @@ int main(){
     square.x = ds.getCentre().getX();
     square.y = ds.getCentre().getY();
     square.w = ds.getWidth();
-    square.h = ds.getHeight();
+    square.h = ds.getLength();
 
     //collision
     CollisionObjectContainer container;

@@ -1,3 +1,4 @@
+#include <cstddef>
 #include <iostream>
 #include <cmath>
 #include "vec.hpp"
@@ -14,7 +15,7 @@ enum class Shape2D{
 // Circle
 
 class Circle{
-    private:
+    protected:
         double radius = 1;
     public:
         ~Circle() = default;
@@ -25,7 +26,7 @@ class Circle{
 // Ellipse
 
 class Ellipse{
-    private:
+    protected:
         double A_axis=1;
         double B_axis=1;
     public:
@@ -36,7 +37,7 @@ class Ellipse{
 // Triangle
 
 class Triangle{
-    private:
+    protected:
         double height;
         double base;
     public:
@@ -48,15 +49,15 @@ class Triangle{
 
 class Rectangle{
     protected:
-        double height=1;
+        double length=1;
         double width=1;
     public:
         ~Rectangle() = default;
         Rectangle() = default;
-        Rectangle(int WIDTH, int HEIGHT):width(WIDTH), height(HEIGHT){}
+        Rectangle(int WIDTH, int LENGTH):width(WIDTH), length(LENGTH){}
         double getWidth()const{return width;}
-        double getHeight()const{return height;}
-        bool operator==(Rectangle & obj)const{return obj.height == height && obj.width == width;}
+        double getLength()const{return length;}
+        bool operator==(Rectangle & obj)const{return obj.length == length && obj.width == width;}
 };
 //Shape2DCollision (replace Shape2D)
 class Shape2DCollision: public Rectangle, Triangle, Ellipse, Circle{
@@ -77,7 +78,10 @@ class Shape2DCollision: public Rectangle, Triangle, Ellipse, Circle{
         void changeCentre(Vec2 obj){centre+=obj;}
         void changeCentre(double x, double y){centre += Vec2(x, y);}
 
-        bool operator==(Shape2DCollision & obj)const{return obj.getCentre()== centre;}// TO CONTINUE
+        bool operator==(Shape2DCollision & obj)const{
+            bool Rect_equal = obj.centre == centre && obj.width == width && obj.length == length;
+            return Rect_equal;
+        }// TO CONTINUE
 };
 
 // Container
@@ -97,8 +101,8 @@ class CollisionObjectContainer{
                     // Colliding for rect
                     bool colliding = obj1.getCentre().getX() - obj1.getWidth()/2 <= obj2.getCentre().getX() + obj2.getWidth()/2 &&
                     obj1.getCentre().getX() + obj1.getWidth()/2 >= obj2.getCentre().getX() - obj2.getWidth()/2&&
-                    obj1.getCentre().getY() - obj1.getHeight()/2 <= obj2.getCentre().getY() + obj2.getHeight()/2&&
-                    obj1.getCentre().getY() + obj1.getHeight()/2 >= obj2.getCentre().getY() - obj2.getHeight()/2;
+                    obj1.getCentre().getY() - obj1.getLength()/2 <= obj2.getCentre().getY() + obj2.getLength()/2&&
+                    obj1.getCentre().getY() + obj1.getLength()/2 >= obj2.getCentre().getY() - obj2.getLength()/2;
 
                     if (!(obj1==obj2) && colliding){
                         printf("ok\n");
