@@ -1,4 +1,4 @@
-#include <cstddef>
+#include <csignal>
 #include <iostream>
 #include <cmath>
 #include "vec.hpp"
@@ -101,7 +101,6 @@ class CollisionObjectContainer{
                 obj1.getCentre().getY() + obj1.getLength()/2 >= obj2.getCentre().getY() - obj2.getLength()/2;
                 return colliding;
             }
-
             return false;
         }
 

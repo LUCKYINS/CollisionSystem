@@ -1,5 +1,10 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
+#include <cinttypes>
+#include <climits>
+#include <cmath>
+#include <cstdio>
 #include "collision.hpp"
 #include "vec.hpp"
 
@@ -19,33 +24,20 @@ int main(){
     SDL_Window *window = SDL_CreateWindow("CollisionSystem", 300, 300, w, h,SDL_WINDOW_SHOWN);
     SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-    //rec
-    Rectangle r(800, 100);
-    Shape2DCollision dr(r, Vec2(0, 400));
-    SDL_Rect rec;
-    rec.x = dr.getCentre().getX();
-    rec.y = dr.getCentre().getY();
-    rec.w = dr.getWidth();
-    rec.h = dr.getLength();
-
-    //MRUA
-    double a = 0.1;
-    double v = 0;
-    double y = 0;
-
     //Square
-    Rectangle s(100,100);
-    Shape2DCollision ds(s,Vec2(0, 0));
-    SDL_Rect square;
-    square.x = ds.getCentre().getX();
-    square.y = ds.getCentre().getY();
-    square.w = ds.getWidth();
-    square.h = ds.getLength();
-
-    //collision
-    CollisionObjectContainer container;
-    container.addCollisionObject(dr);
-    container.addCollisionObject(ds);
+    int xy = 1000000;
+    int xy2 = pow(xy, 1.0/2.0);
+    std::vector<SDL_Rect> recVec;
+    for (int i; i < xy; i++){
+        Rectangle s(2,2);
+        Shape2DCollision ds(s,Vec2(i%xy2, i/xy2));
+        SDL_Rect square;
+        square.x = ds.getCentre().getX();
+        square.y = ds.getCentre().getY();
+        square.w = ds.getWidth();
+        square.h = ds.getLength();
+        recVec.push_back(square);
+    }
 
     // event
     SDL_Event e;
@@ -57,25 +49,19 @@ int main(){
                     return 1;
             }
         }
-        ds.changeCentre(Vec2(0,1));
-        square.y = ds.getCentre().getY();
 
-        //
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
-
-
+        //Draw
         SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
-        SDL_RenderFillRect(renderer, &square);
-        SDL_RenderFillRect(renderer, &rec);
+        for (SDL_Rect i:recVec){
+            SDL_RenderFillRect(renderer, &i);
+        }
 
+        //Deaw
         SDL_RenderPresent(renderer);
-
-        v += a;
-        y += v + (1/2) * a;
-
-        container.checkCollision();
-
+        system("read -p '' var");
+        break;
         Uint64 end = SDL_GetPerformanceCounter();
         float elapseMS = (end-start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
         SDL_Delay(16.666f -elapseMS);
