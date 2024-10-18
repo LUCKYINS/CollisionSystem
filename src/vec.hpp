@@ -8,12 +8,9 @@ class Vec2{
         * Proved a two dimensional vector
     */
     protected: // protected so it could be inherited but also private
-
         double x=0;
         double y=0;
-
     public:
-
         Vec2()= default;
         ~Vec2() = default;
         Vec2(double X, double Y):x(X), y(Y){};
@@ -28,7 +25,7 @@ class Vec2{
             x += obj.x;
             y += obj.y;
         }
-        Vec2 operator+(const Vec2& obj2){return Vec2(obj2.x + x, obj2.y + y);}
+        Vec2 operator+(const Vec2& obj2)const{return Vec2(obj2.x + x, obj2.y + y);}
 };
 
 class Vec3:public Vec2{
@@ -36,11 +33,8 @@ class Vec3:public Vec2{
         *Proved a three dimensional vector
     */
     private:
-
         double z=0;
-
     public:
-
         Vec3() = default;
         ~Vec3() = default;
 
@@ -54,7 +48,7 @@ class Vec3:public Vec2{
             Vec2::operator+=(obj);
             z += obj.z;
         }
-        Vec3 operator+(const Vec3& obj){return Vec3(Vec2::operator+(obj), z+obj.z);}
+        Vec3 operator+(const Vec3& obj)const{return Vec3(Vec2::operator+(obj), z+obj.z);}
 };
 namespace std {
     template <> struct hash<Vec2> {
