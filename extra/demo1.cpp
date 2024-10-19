@@ -7,6 +7,9 @@ int size = 500;
 SDL_Window *window;
 SDL_Renderer * renderer;
 SDL_Event e;
+Uint64 start;
+Uint64 end;
+float elapsedMS;
 
 bool Init(){
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
@@ -26,35 +29,42 @@ bool Init(){
     return true;
 }
 
-void destory(){
+void Destroy(){
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
     SDL_Quit();
-    exit(1);
+    exit(0);
 }
 
-void event(){
+void Event(){
     while (SDL_PollEvent(&e) !=0 ){
         switch (e.type) {
             case SDL_QUIT:
-                destory();
+                Destroy();
         }
     }
 }
 
 
 
-void loop(){
+void Loop(){
     while (1) {
-        event();
+        start = SDL_GetPerformanceCounter();
+        Event();
+        //
+
+        //
+        end = SDL_GetPerformanceCounter();
+        //Delta Time
+        elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
+        SDL_Delay(floor(16.666f - elapsedMS));
     }
 }
 
-void load(){}
-void animation(){}
+
+void Animation(){}
 
 int main(){
     if (!Init()){return 1;};
-    loop();
-    return 0;
+    Loop();
 }
