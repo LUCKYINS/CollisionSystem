@@ -1,3 +1,7 @@
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_mouse.h>
+#include <cmath>
+#include <cstdio>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "../src/collision.hpp"
@@ -7,16 +11,19 @@ int size = 500;
 SDL_Window *window;
 SDL_Renderer * renderer;
 SDL_Event e;
+Vec2 mousepos;
 Uint64 start;
 Uint64 end;
 float elapsedMS;
+
+
 
 bool Init(){
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
         printf("%s", SDL_GetError());
         return false;
     }
-    window = SDL_CreateWindow("Demo1", 0, 500, size, size, SDL_WINDOW_SHOWN);
+    window = SDL_CreateWindow("Demo1", 0, 200, size, size, SDL_WINDOW_SHOWN);
     if(!window){
         printf("%s", SDL_GetError());
         return false;
@@ -38,9 +45,12 @@ void Destroy(){
 
 void Event(){
     while (SDL_PollEvent(&e) !=0 ){
+        mousepos = Vec2(e.motion.x, e.motion.y);
         switch (e.type) {
             case SDL_QUIT:
+
                 Destroy();
+            break;
         }
     }
 }
@@ -52,7 +62,7 @@ void Loop(){
         start = SDL_GetPerformanceCounter();
         Event();
         //
-
+        printf("%f::%f\n",mousepos.getX(), mousepos.getY());
         //
         end = SDL_GetPerformanceCounter();
         //Delta Time
