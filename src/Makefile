@@ -4,9 +4,9 @@ SDLFlages= -lSDL2
 
 all: complie link
 
-link:
+link: main.o
 	$(GXX) main.o $(CFlages) $(SDLFlages) -o main
-complie:
+complie: main.cpp
 	$(GXX) $(CFlages) -c main.cpp
 
 noF:
