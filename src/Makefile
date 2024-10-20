@@ -4,10 +4,10 @@ SDLFlages= -lSDL2
 
 all: complie link
 
-link: main.o
-	$(GXX) main.o $(CFlages) $(SDLFlages) -o main.exe
-complie: main.cpp
-	$(GXX) $(CFlages) -c main.cpp
+link: test.o
+	$(GXX) test.o $(CFlages) $(SDLFlages) -o test.exe
+complie: test.cpp
+	$(GXX) $(CFlages) -c test.cpp
 
 noF:
 	g++ main.cpp -o main $(SDLFlages)

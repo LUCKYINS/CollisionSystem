@@ -1,8 +1,6 @@
-#include <csignal>
 #include <iostream>
 #include <cmath>
 #include "vec.hpp"
-#include <math.h>
 #include <set>
 #include <vector>
 
@@ -113,8 +111,6 @@ class CollisionObjectContainer{
             for (Shape2DCollision &obj1 : collisionVector){
                 for(Shape2DCollision &obj2: collisionVector){
                     if (!(obj1==obj2) && isColliding(obj1, obj2)){
-                        printf("ok\n");
-                        obj2.setCentre(0, 100);
                     }
                 }
             }
