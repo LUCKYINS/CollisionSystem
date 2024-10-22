@@ -1,3 +1,7 @@
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_mouse.h>
+#include <SDL2/SDL_render.h>
+#include <cstdio>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include "../src/collision.hpp"
@@ -12,10 +16,13 @@ Uint64 start;
 Uint64 end;
 float elapsedMS;
 SDL_Rect rect;
-CollisionObjectContainer container;
 
 
 
+
+void Spawn(){
+    SDL_RenderFillRect(renderer, &rect);
+}
 
 void Init(){
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
@@ -34,6 +41,8 @@ void Init(){
     }
 }
 void Load(){
+    //Drawing color
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     //
     rect.x = 100;
     rect.y = 100;
@@ -54,22 +63,20 @@ void Event(){
         switch (e.type) {
             case SDL_QUIT:
                 Destroy();
+            case SDL_MOUSEBUTTONDOWN:
+                case SDL_BUTTON_LEFT:
+                    Spawn();
             break;
         }
     }
 }
 void Update(){
-    // Follow mouse
-    rect.x = mousepos.getX() - rect.w/2.0;
-    rect.y = mousepos.getY() - rect.h/2.0;
+    rect.x = (int)mousepos.getX()-rect.w/2;
+    rect.y = (int)mousepos.getY()-rect.h/2;
 }
 
 void Animation(){
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-    SDL_RenderClear(renderer);
     //Draw
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
-    SDL_RenderFillRect(renderer, &rect);
     //Draw
     SDL_RenderPresent(renderer);
 }
