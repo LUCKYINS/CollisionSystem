@@ -2,7 +2,10 @@
 #include <SDL2/SDL_mouse.h>
 #include <SDL2/SDL_rect.h>
 #include <SDL2/SDL_render.h>
+#include <SDL2/SDL_timer.h>
+#include <cstddef>
 #include <cstdio>
+#include <cstdlib>
 #include <immintrin.h>
 #include <iostream>
 #include <SDL2/SDL.h>
@@ -10,9 +13,8 @@
 #include "../src/collision.hpp"
 #include "../src/vec.hpp"
 
-#define SIZE 625
-#define SRSIZE 25
-#define SCREENSIZE 625
+#define SIZE 400
+#define SCREENSIZE 400
 SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Event e;
@@ -23,8 +25,24 @@ float elapsedMS;
 SDL_Rect rect;
 bool spawnOn = false;
 
+
 struct RectB{
+    void setSandColor(int x){
+        switch (x) {
+            case 0:
+                sandColor = Vec3(104,152,128);
+                break;
+            case 1:
+                sandColor =Vec3(104,167,128);
+                break;
+            case 2:
+                sandColor = Vec3(104,173,128);
+                break;
+        }
+
+    }
     SDL_Rect rect;
+    Vec3 sandColor;
     bool on = false;
 };
 
@@ -41,6 +59,8 @@ void grid(){
         r.y+=(int)i/SIZE * r.h;
         RectB b;
         b.rect = r;
+        int x = rand()%3;
+        b.setSandColor(x);
         sandVector.push_back(b);
     }
 }
@@ -80,6 +100,7 @@ void Init(){
     }
 }
 void Load(){
+    srand((unsigned) time(NULL));
     rect.x = 0;
     rect.y = 0;
     rect.h = 1;
@@ -144,9 +165,9 @@ void Animation(){
     SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
     //Draw
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     for (RectB i: sandVector){
         if(i.on){
+            SDL_SetRenderDrawColor(renderer, i.sandColor.getX(), i.sandColor.getY(),i.sandColor.getZ(), 100);
             SDL_RenderFillRect(renderer, &i.rect);
         }
 
@@ -164,7 +185,6 @@ void Loop(){
         end = SDL_GetPerformanceCounter();
         //Delta Time
         elapsedMS = (float)(end - start) / SDL_GetPerformanceFrequency() * 1000.0f;
-        SDL_Delay(16.666f -elapsedMS);
     }
 }
 
