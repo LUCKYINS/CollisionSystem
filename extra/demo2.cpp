@@ -1,12 +1,6 @@
-#include <SDL2/SDL_events.h>
-#include <SDL2/SDL_mouse.h>
-#include <SDL2/SDL_rect.h>
-#include <SDL2/SDL_render.h>
+
 #include <SDL2/SDL_timer.h>
-#include <cstddef>
 #include <cstdio>
-#include <cstdlib>
-#include <immintrin.h>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <vector>
@@ -24,6 +18,8 @@ Uint64 end;
 float elapsedMS;
 SDL_Rect rect;
 bool spawnOn = false;
+bool dispawnOn = false;
+
 
 
 struct RectB{
@@ -65,23 +61,28 @@ void grid(){
     }
 }
 
-void Spawn(){
+bool inside_circle(int i, int radius) {
+    double dx = mousepos.getX() - i%SIZE,
+        dy = mousepos.getY() - i/SIZE;
+    double distance = sqrt(dx*dx + dy*dy);
+    return distance <= radius;
+}
+
+void Dispawn(){
     for (int i = 0; i< SIZE*SIZE; ++i){
-        if(inRect(sandVector[i])){
-            for(int j = 0; j < 15; j++){
-                sandVector[i].on = true;
-                sandVector[i+SIZE*j].on = true;
-                sandVector[i-SIZE*j].on = true;
-                for(int k = 0; k < 15; k++){
-                sandVector[i+SIZE*j+k].on = true;
-                sandVector[i-SIZE*j-k].on = true;
-                sandVector[i+SIZE*j-k].on = true;
-                sandVector[i-SIZE*j+k].on = true;
-                }
-            }
+        if (inside_circle(i, 30)) {
+            sandVector[i].on = false;
         }
     }
 }
+void Spawn(){
+    for (int i = 0; i< SIZE*SIZE; ++i){
+        if (inside_circle(i, 20)) {
+            sandVector[i].on = true;
+        }
+    }
+}
+
 
 void Init(){
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
@@ -127,6 +128,9 @@ void Event(){
                     case SDL_BUTTON_LEFT:
                         spawnOn = true;
                         break;
+                    case SDL_BUTTON_RIGHT:
+                        dispawnOn = true;
+                        break;
                 }
                 break;
             case SDL_MOUSEBUTTONUP:
@@ -134,13 +138,18 @@ void Event(){
                     case SDL_BUTTON_LEFT:
                         spawnOn = false;
                         break;
+                    case SDL_BUTTON_RIGHT:
+                        dispawnOn = false;
+                        break;
                 }
                 break;
+            break;
         }
     }
 }
 void Update(){
     if(spawnOn)Spawn();
+    if(dispawnOn)Dispawn();
     // Mouse
     rect.x = (int)mousepos.getX()-rect.w/2;
     rect.y = (int)mousepos.getY()-rect.h/2;
@@ -150,13 +159,17 @@ void Update(){
             sandVector[i].on = false;
             sandVector[i+SIZE].on = true;
         }
-        if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE+1].on && i+SIZE<SIZE*SIZE) {
-            sandVector[i].on = false;
-            sandVector[i+SIZE+1].on = true;
+        if (rand()%2){
+            if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE+1].on && i+SIZE<SIZE*SIZE) {
+                sandVector[i].on = false;
+                sandVector[i+SIZE+1].on = true;
+            }
         }
-        if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE-1].on && i+SIZE<SIZE*SIZE) {
-            sandVector[i].on = false;
-            sandVector[i+SIZE-1].on = true;
+        else {
+            if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE-1].on && i+SIZE<SIZE*SIZE ) {
+                sandVector[i].on = false;
+                sandVector[i+SIZE-1].on = true;
+            }
         }
     }
 }
@@ -185,6 +198,7 @@ void Loop(){
         end = SDL_GetPerformanceCounter();
         //Delta Time
         elapsedMS = (float)(end - start) / SDL_GetPerformanceFrequency() * 1000.0f;
+        SDL_Delay(1);
     }
 }
 

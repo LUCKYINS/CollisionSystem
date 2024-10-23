@@ -8,7 +8,7 @@
 #define COLLISION
 
 enum class Shape2D{
-  Rect,Tri,Cir,Elli
+  Rect,Cir
 };
 
 // Circle
@@ -19,28 +19,6 @@ class Circle{
         ~Circle() = default;
         Circle() = default;
         Circle(double RADIUS):radius(RADIUS){}
-};
-
-// Ellipse
-class Ellipse{
-    protected:
-        double A_axis=1;
-        double B_axis=1;
-    public:
-        ~Ellipse() = default;
-        Ellipse() = default;
-        Ellipse(int A_AXIS, int B_AXIS, Vec2 CENTRE):A_axis(A_AXIS), B_axis(B_AXIS){}
-};
-
-// Triangle
-class Triangle{
-    protected:
-        double height;
-        double base;
-    public:
-        ~Triangle() = default;
-        Triangle() = default;
-        Triangle(int HEIGHT, int BASE, Vec2 CENTRE):height(HEIGHT), base(BASE){}
 };
 
 // Rectangle & Square
@@ -58,7 +36,7 @@ class Rectangle{
 };
 
 //Shape2DCollision (replace Shape2D)
-class Shape2DCollision: public Rectangle, Triangle, Ellipse, Circle{
+class Shape2DCollision: public Rectangle, Circle{
     private:
         Vec2 centre = Vec2(0,0);
         //bool dynamic = true;
