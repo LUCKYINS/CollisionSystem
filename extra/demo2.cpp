@@ -1,6 +1,7 @@
 
 #include <SDL2/SDL_timer.h>
 #include <cstdio>
+#include <cstdlib>
 #include <iostream>
 #include <SDL2/SDL.h>
 #include <vector>
@@ -159,18 +160,15 @@ void Update(){
             sandVector[i].on = false;
             sandVector[i+SIZE].on = true;
         }
-        if (rand()%2){
-            if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE+1].on && i+SIZE<SIZE*SIZE) {
-                sandVector[i].on = false;
-                sandVector[i+SIZE+1].on = true;
-            }
+        else if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE+1].on && i+SIZE<SIZE*SIZE && rand()%2) {
+            sandVector[i].on = false;
+            sandVector[i+SIZE+1].on = true;
         }
-        else {
-            if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE-1].on && i+SIZE<SIZE*SIZE ) {
-                sandVector[i].on = false;
-                sandVector[i+SIZE-1].on = true;
-            }
+        else if (sandVector[i].on && sandVector[i+SIZE].on && !sandVector[i+SIZE-1].on && i+SIZE<SIZE*SIZE && rand()%2) {
+            sandVector[i].on = false;
+            sandVector[i+SIZE-1].on = true;
         }
+        else {}
     }
 }
 
