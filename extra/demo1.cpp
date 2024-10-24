@@ -1,4 +1,3 @@
-#include <iostream>
 #include <SDL2/SDL.h>
 #include "../src/collision.hpp"
 #include "../src/vec.hpp"
@@ -8,11 +7,10 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 SDL_Event e;
 Vec2 mousepos;
-Uint64 start;
-Uint64 end;
+Uint16 start;
+Uint16 end;
 float elapsedMS;
 SDL_Rect rect;
-CollisionObjectContainer container;
 
 
 

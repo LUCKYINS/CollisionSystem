@@ -1,98 +1,91 @@
-#include <iostream>
+#include <SDL2/SDL_stdinc.h>
 #include <cmath>
 #include "vec.hpp"
-#include <set>
 #include <vector>
 
 #ifndef COLLISION
 #define COLLISION
 
-enum class Shape2D{
-  Rect,Cir
-};
 
 // Circle
 class Circle{
     protected:
-        double radius = 1;
+        int radius = 1;
+        Vec2 origin = Vec2(0,0);
     public:
         ~Circle() = default;
         Circle() = default;
-        Circle(double RADIUS):radius(RADIUS){}
+        Circle(int RADIUS):radius(RADIUS){}
+        bool inCircle(int i, int radius)const{return true;}//TODO
 };
 
 // Rectangle & Square
 class Rectangle{
     protected:
-        double length=1;
-        double width=1;
+        int _length=1;
+        int _width=1;
+        Vec2 _origin = Vec2(0,0);
     public:
         ~Rectangle() = default;
         Rectangle() = default;
-        Rectangle(int WIDTH, int LENGTH):width(WIDTH), length(LENGTH){}
-        double getWidth()const{return width;}
-        double getLength()const{return length;}
-        bool operator==(Rectangle & obj)const{return obj.length == length && obj.width == width;}
+        Rectangle(int WIDTH, int LENGTH, Vec2 ORIGIN):_width(WIDTH), _length(LENGTH), _origin(ORIGIN){}
+        int getWidth()const{return _width;}
+        int getLength()const{return _length;}
+        bool inRectangle()const{return true;}//TODO
+        bool operator==(Rectangle & obj)const{return obj._length == _length && obj._width == _width;}
 };
 
-//Shape2DCollision (replace Shape2D)
-class Shape2DCollision: public Rectangle, Circle{
+class Cell{
     private:
-        Vec2 centre = Vec2(0,0);
-        //bool dynamic = true;
-        Shape2D shape;
-
+        Uint16 _scale = 1;
+        bool _on = false;
+        Vec2 _origin = Vec2(0, 0);
+        Vec3 _color= Vec3(0, 0, 0);
     public:
-        ~Shape2DCollision() = default;
-        Shape2DCollision() = default;
+        // Constructors
+        Cell() = default;
+        Cell(Uint16 SCALE, Vec2 ORIGIN, Vec3 COLOR):_scale(SCALE), _origin(ORIGIN), _color(COLOR){};
+        Cell(Uint16 SCALE, int x, int y, Uint8 r, Uint8 g, Uint8 b):_scale(SCALE), _origin(x, y), _color(r, g, b){}
+        Cell(Uint16 SCALE, Vec2 ORIGIN):_scale(SCALE), _origin(ORIGIN){}
+        Cell(Uint16 SCALE, int x, int y):_scale(SCALE), _origin(x, y){}
+        // Destructors
+        ~Cell()= default;
 
-        Shape2DCollision(Rectangle OBJ, Vec2 CENTRE): Rectangle(OBJ),centre(CENTRE){shape = Shape2D::Rect;} // To continu
+        //Setter
+        void CellOn(){_on=true;}
+        void CellOf(){_on=false;}
+        void setCellColor(Uint8 r,Uint8  g,Uint8 b){_color = Vec3(r, g,b);}
+        void setCellColor(Vec3 color){_color = color;}
+        void setOrigin(int x, int y){_origin = Vec2(x, y);}
+        void setOrigin(Vec2 origin){_origin = origin;}
+        void setScale(Uint16 scale){_scale = scale;}
 
-        Vec2 getCentre()const{return centre;}
-        void setCentre(Vec2 obj){centre = obj;}
-        void setCentre(double x, double y){centre = Vec2(x, y);}
-        void changeCentre(Vec2 obj){centre+=obj;}
-        void changeCentre(double x, double y){centre += Vec2(x, y);}
-
-        Shape2D getShape()const{return shape;}
-
-        bool operator==(Shape2DCollision & obj)const{
-            if (obj.getShape() == Shape2D::Rect &&  shape==Shape2D::Rect){
-                return obj.centre == centre && Rectangle::operator==(obj) ;
-            }
-            return false;
-        }// TO CONTINUE
+        //Getter
+        Vec3 setCellColor()const{return _color;}
+        Vec2 setOrigin()const{return _origin;}
+        Uint16 setScale()const{return _scale;}
 };
 
-// Container
-class CollisionObjectContainer{
+typedef std::vector<std::reference_wrapper<Cell>> refCellsVector_t;
+
+class GridLayer{//TODO cell scale
     private:
-        std::vector<std::reference_wrapper<Shape2DCollision>> collisionVector; // add refenceing of objects
-        bool isColliding(Shape2DCollision &obj1, Shape2DCollision &obj2)const{
-            if (obj1.getShape() == Shape2D::Rect  && obj2.getShape() == Shape2D::Rect){
-                // Colliding for rect/rect
-                bool colliding = obj1.getCentre().getX() - obj1.getWidth()/2 <= obj2.getCentre().getX() + obj2.getWidth()/2 &&
-                obj1.getCentre().getX() + obj1.getWidth()/2 >= obj2.getCentre().getX() - obj2.getWidth()/2&&
-                obj1.getCentre().getY() - obj1.getLength()/2 <= obj2.getCentre().getY() + obj2.getLength()/2&&
-                obj1.getCentre().getY() + obj1.getLength()/2 >= obj2.getCentre().getY() - obj2.getLength()/2;
-                return colliding;
+        Uint16 _width = 1, _height = 1,_cell_scale = 1, _dimension = _width*_height;
+        refCellsVector_t cellsVector = {};
+    public:
+        GridLayer() = default;
+        ~GridLayer() = default;
+        GridLayer(Uint16 WIDTH, Uint16 HEIGHT):_width(WIDTH), _height(HEIGHT){
+            for (int i = 0; i < _dimension; ++i){
+                Cell c = Cell(_cell_scale, Vec2(i%_width, i/_height));
+                cellsVector.push_back(c);
             }
-            return false;
         }
 
-    public:
-        ~CollisionObjectContainer() = default;
-        CollisionObjectContainer() = default;
-        void addCollisionObject(Shape2DCollision &obj){collisionVector.push_back(obj);}
+        //Getter
+        refCellsVector_t getCellsVector()const{return cellsVector;}
+        Uint16 getDimension()const{return _dimension;}
+        Uint16 getWidth()const{return _width;}
 
-        void checkCollision(){
-            for (Shape2DCollision &obj1 : collisionVector){
-                for(Shape2DCollision &obj2: collisionVector){
-                    if (!(obj1==obj2) && isColliding(obj1, obj2)){
-                    }
-                }
-            }
-        }
 };
-
 #endif
