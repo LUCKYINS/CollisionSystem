@@ -10,10 +10,7 @@ Vec2 mousepos;
 Uint16 start;
 Uint16 end;
 float elapsedMS;
-SDL_Rect rect;
-
-
-
+GridLayer grid;
 
 void Init(){
     if (SDL_Init(SDL_INIT_EVERYTHING) < 0){
@@ -31,14 +28,25 @@ void Init(){
         exit(1);
     }
 }
-void Load(){
-    //
-    rect.x = 100;
-    rect.y = 100;
-    rect.h = 100;
-    rect.w = 100;
-}
 
+void Load(){
+    grid = GridLayer(size, size);
+}
+bool inRect(Vec2 origin){
+    int w = 100, h=100;
+    bool leftlimit = origin.getX()> mousepos.getX() - w/2;
+    bool rightlimit = origin.getX()<mousepos.getX() + w/2;
+    bool uplimit = origin.getY()> mousepos.getY() - h/2;
+    bool downlimit = origin.getY()<mousepos.getY() + h/2;
+    return leftlimit && rightlimit && uplimit && downlimit;
+}
+void rect(){
+    for (Uint32 i= 0; i < grid.getDimension() ; ++i){
+        if(inRect(grid.getCellsVector()[i].getOrigin())){
+            grid.getCellsVector()[i].cellOn();
+        }
+    }
+}
 void Destroy(){
     SDL_DestroyWindow(window);
     SDL_DestroyRenderer(renderer);
@@ -52,14 +60,12 @@ void Event(){
         switch (e.type) {
             case SDL_QUIT:
                 Destroy();
-            break;
         }
     }
 }
+
 void Update(){
-    // Follow mouse
-    rect.x = mousepos.getX() - rect.w/2.0;
-    rect.y = mousepos.getY() - rect.h/2.0;
+    grid.allCellOff();rect();
 }
 
 void Animation(){
@@ -67,7 +73,11 @@ void Animation(){
     SDL_RenderClear(renderer);
     //Draw
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 200);
-    SDL_RenderFillRect(renderer, &rect);
+    for (Cell i: grid.getCellsVector()){
+        if (i.isOn()){
+            SDL_RenderDrawPoint(renderer, i.getOrigin().getX(), i.getOrigin().getY());
+        }
+    }
     //Draw
     SDL_RenderPresent(renderer);
 }
@@ -81,7 +91,7 @@ void Loop(){
         end = SDL_GetPerformanceCounter();
         //Delta Time
         elapsedMS = (end - start) / (float)SDL_GetPerformanceFrequency() * 1000.0f;
-        SDL_Delay(floor(16.666f - elapsedMS));
+        SDL_Delay(16.666f - elapsedMS);
     }
 }
 

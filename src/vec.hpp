@@ -15,9 +15,9 @@ class Vec2{
         ~Vec2() = default;
         Vec2(int X, int Y):x(X), y(Y){};
 
-        int getX() const{return x;}
+        int getX()const{return x;}
 
-        int getY() const{return y;}
+        int getY()const{return y;}
 
         bool operator==(const Vec2& obj)const{return (obj.x == x) && (obj.y == y);}
 

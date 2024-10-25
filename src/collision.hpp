@@ -1,6 +1,7 @@
 #include <SDL2/SDL_stdinc.h>
 #include <cmath>
 #include "vec.hpp"
+#include <cstdio>
 #include <vector>
 
 #ifndef COLLISION
@@ -31,7 +32,13 @@ class Rectangle{
         Rectangle(int WIDTH, int LENGTH, Vec2 ORIGIN):_width(WIDTH), _length(LENGTH), _origin(ORIGIN){}
         int getWidth()const{return _width;}
         int getLength()const{return _length;}
-        bool inRectangle()const{return true;}//TODO
+        bool pointInRectangle(Vec2 origin)const{
+            bool leftlimit = origin.getX()> _origin.getX() - _width/2;
+            bool rightlimit = origin.getX()<_origin.getX() + _width/2;
+            bool uplimit = origin.getY()> _origin.getY() - _length/2;
+            bool downlimit = origin.getY()<_origin.getY() + _length/2;
+            return leftlimit && rightlimit && uplimit && downlimit;
+        }
         bool operator==(Rectangle & obj)const{return obj._length == _length && obj._width == _width;}
 };
 
@@ -44,7 +51,7 @@ class Cell{
     public:
         // Constructors
         Cell() = default;
-        Cell(Uint16 SCALE, Vec2 ORIGIN, Vec3 COLOR):_scale(SCALE), _origin(ORIGIN), _color(COLOR){};
+        Cell(Uint16 SCALE, Vec2& ORIGIN, Vec3& COLOR):_scale(SCALE), _origin(ORIGIN), _color(COLOR){};
         Cell(Uint16 SCALE, int x, int y, Uint8 r, Uint8 g, Uint8 b):_scale(SCALE), _origin(x, y), _color(r, g, b){}
         Cell(Uint16 SCALE, Vec2 ORIGIN):_scale(SCALE), _origin(ORIGIN){}
         Cell(Uint16 SCALE, int x, int y):_scale(SCALE), _origin(x, y){}
@@ -52,8 +59,8 @@ class Cell{
         ~Cell()= default;
 
         //Setter
-        void CellOn(){_on=true;}
-        void CellOf(){_on=false;}
+        void cellOn(){_on=true;}
+        void cellOff(){_on=false;}
         void setCellColor(Uint8 r,Uint8  g,Uint8 b){_color = Vec3(r, g,b);}
         void setCellColor(Vec3 color){_color = color;}
         void setOrigin(int x, int y){_origin = Vec2(x, y);}
@@ -61,31 +68,36 @@ class Cell{
         void setScale(Uint16 scale){_scale = scale;}
 
         //Getter
-        Vec3 setCellColor()const{return _color;}
-        Vec2 setOrigin()const{return _origin;}
-        Uint16 setScale()const{return _scale;}
+        Vec3 getCellColor()const{return _color;}
+        Vec2 getOrigin()const{return _origin;}
+        Uint16 getScale()const{return _scale;}
+        bool isOn()const{return _on;}
 };
-
-typedef std::vector<std::reference_wrapper<Cell>> refCellsVector_t;
+typedef std::vector<Cell> cellsVector_t;
 
 class GridLayer{//TODO cell scale
     private:
-        Uint16 _width = 1, _height = 1,_cell_scale = 1, _dimension = _width*_height;
-        refCellsVector_t cellsVector = {};
+        Uint16 _width = 1, _height = 1,_cell_scale = 1;
+        Uint32 _dimension = 1;
+        cellsVector_t _cell_vector = {};
     public:
         GridLayer() = default;
         ~GridLayer() = default;
-        GridLayer(Uint16 WIDTH, Uint16 HEIGHT):_width(WIDTH), _height(HEIGHT){
-            for (int i = 0; i < _dimension; ++i){
-                Cell c = Cell(_cell_scale, Vec2(i%_width, i/_height));
-                cellsVector.push_back(c);
+        GridLayer(Uint16 WIDTH, Uint16 HEIGHT):_width(WIDTH), _height(HEIGHT), _dimension(WIDTH*HEIGHT){
+            for (Uint32 i = 0; i < _dimension; ++i){
+                _cell_vector.emplace_back(Cell{_cell_scale, Vec2(i%_width,i/_width)}); // Transform to unordered set
             }
         }
 
         //Getter
-        refCellsVector_t getCellsVector()const{return cellsVector;}
-        Uint16 getDimension()const{return _dimension;}
+        cellsVector_t& getCellsVector(){return _cell_vector;}
+        Uint32 getDimension()const{return _dimension;}
         Uint16 getWidth()const{return _width;}
+        void allCellOff(){
+            for (Cell& i: _cell_vector){
+                i.cellOff();
+            }
+        }
 
 };
 #endif
